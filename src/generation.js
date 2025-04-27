@@ -1,4 +1,6 @@
 import { generateRaw, chat, characters, this_chid, getCharacterCardFields, name1 } from "../../../../../script.js";
+import { getContext } from '../../../../../../scripts/extensions.js';
+
 import { groups, selected_group } from "../../../../../scripts/group-chats.js";
 import { log, warn, debug, error, unescapeJsonString, getLastMessageWithTracker } from "../lib/utils.js";
 import { yamlToJSON } from "../lib/ymlParser.js";
@@ -52,17 +54,40 @@ function conditionalSection(template, sectionName, condition, content) {
  */
 export async function generateTracker(mesNum, includedFields = FIELD_INCLUDE_OPTIONS.DYNAMIC) {
 	if (mesNum == null || mesNum < 0 || chat[mesNum].extra?.isSmallSys) return null;
+    let ctx = getContext();
+    let presetManager = ctx.getPresetManager();
+    const preselectedPreset = presetManager.getSelectedPreset();
+    if (extensionSettings.selectedProfile !== "current") {
+        debug("overriding connection profile");
+    }
 
-	let tracker;
-	if (extensionSettings.generationMode == generationModes.TWO_STAGE) tracker = await generateTwoStageTracker(mesNum, includedFields);
-	else tracker = await generateSingleStageTracker(mesNum, includedFields);
+    if (extensionSettings.selectedCompletionPreset !== "current") {
+        debug("overriding completion preset");
+        presetManager.selectPreset(extensionSettings.selectedCompletionPreset)
+    }
 
-	if (!tracker) return null;
+    debug("connection", extensionSettings.selectedProfile);
+    debug("selectedCompletionPreset", extensionSettings.selectedCompletionPreset);
 
-	const lastMesWithTrackerIndex = getLastMessageWithTracker(mesNum);
-	const lastMesWithTracker = chat[lastMesWithTrackerIndex];
-	let lastTracker = lastMesWithTracker ? lastMesWithTracker.tracker : getDefaultTracker(extensionSettings.trackerDef, FIELD_INCLUDE_OPTIONS.ALL, OUTPUT_FORMATS.JSON);
-	return updateTracker(lastTracker, tracker, extensionSettings.trackerDef, FIELD_INCLUDE_OPTIONS.ALL, OUTPUT_FORMATS.JSON, true);
+    try {
+        let tracker;
+        if (extensionSettings.generationMode == generationModes.TWO_STAGE) tracker = await generateTwoStageTracker(mesNum, includedFields);
+        else tracker = await generateSingleStageTracker(mesNum, includedFields);
+
+        if (!tracker) return null;
+
+        const lastMesWithTrackerIndex = getLastMessageWithTracker(mesNum);
+        const lastMesWithTracker = chat[lastMesWithTrackerIndex];
+        let lastTracker = lastMesWithTracker ? lastMesWithTracker.tracker : getDefaultTracker(extensionSettings.trackerDef, FIELD_INCLUDE_OPTIONS.ALL, OUTPUT_FORMATS.JSON);
+        return updateTracker(lastTracker, tracker, extensionSettings.trackerDef, FIELD_INCLUDE_OPTIONS.ALL, OUTPUT_FORMATS.JSON, true);
+    } catch (e) {
+        debug("Exception during tracker generation", e)
+    }
+    finally {
+        debug("removing connection profile & completion preset override");
+        presetManager.selectPreset(preselectedPreset);
+    }
+
 }
 
 /**

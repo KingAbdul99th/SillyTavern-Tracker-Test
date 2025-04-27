@@ -1,5 +1,9 @@
 //#region Setting Enums
 
+export const connectionProfile = {
+    CURRENT: "Same as current"
+}
+
 export const generationModes = {
 	INLINE: "inline",
 	SINGLE_STAGE: "single-stage",
@@ -58,14 +62,14 @@ const twoStageGenerateSystemPrompt = `You are a Scene Tracker Assistant, tasked 
 2. **Incorporate Changes List**:
    - Use the provided changes list to guide updates. Do not infer additional changes beyond what is explicitly listed unless required to ensure consistency.
    - If specific information is missing, rely on prior descriptions, logical inferences, or default details.
-3. **Default Assumptions for Missing Information**: 
+3. **Default Assumptions for Missing Information**:
    - **Character Details**: If no new details are provided for a character, assume reasonable defaults based on previous entries or context.
    - **Outfit**: Include complete outfit details for each character, specifying underwear explicitly. If the character is undressed, list all clothing items, including their placement.
    - **StateOfDress**: Describe how put-together or disheveled the character appears, reflecting any updates in the changes list.
-4. **Incremental Time Progression**: 
+4. **Incremental Time Progression**:
    - Adjust time incrementally based on the changes list, typically only a few seconds per update unless otherwise specified.
    - Format the time as "HH:MM:SS; MM/DD/YYYY (Day Name)".
-5. **Context-Appropriate Times**: 
+5. **Context-Appropriate Times**:
    - Ensure the time aligns with the scene's setting and context (e.g., operating hours for public venues).
 6. **Location Format**: Use specific, detailed locations relevant to the context, avoiding unintended reuse of previous examples.
 7. **Consistency**: Maintain {{trackerFormat}} structure precisely. If no changes occur in a field, retain the most recent value.
@@ -226,17 +230,17 @@ const generateSystemPrompt = `You are a Scene Tracker Assistant, tasked with pro
 
 ### Key Instructions:
 1. **Tracker Format**: Always respond with a complete tracker in {{trackerFormat}} format. Every field must be present in the response, even if unchanged. Do not omit fields or change the {{trackerFormat}} structure.
-2. **Default Assumptions for Missing Information**: 
+2. **Default Assumptions for Missing Information**:
    - **Character Details**: If no new details are provided for a character, assume reasonable defaults (e.g., hairstyle, posture, or attire based on previous entries or context).
    - **Outfit**: Describe the complete outfit for each character, using specific details for color, fabric, and style (e.g., “fitted black leather jacket with silver studs on the collar”). **Underwear must always be included in the outfit description.** If underwear is intentionally missing, specify this clearly in the description (e.g., "No bra", "No panties"). If the character is undressed, list the entire outfit.
    - **StateOfDress**: Describe how put-together or disheveled the character appears, including any removed clothing. If the character is undressed, indicate where discarded items are placed.
-3. **Incremental Time Progression**: 
+3. **Incremental Time Progression**:
    - Adjust time in small increments, ideally only a few seconds per update, to reflect realistic scene progression. Avoid large jumps unless a significant time skip (e.g., sleep, travel) is explicitly stated.
    - Format the time as "HH:MM:SS; MM/DD/YYYY (Day Name)".
-4. **Context-Appropriate Times**: 
+4. **Context-Appropriate Times**:
    - Ensure that the time aligns with the setting. For example, if the scene takes place in a public venue (e.g., a mall), choose an appropriate time within standard operating hours.
 5. **Location Format**: Avoid unintended reuse of specific locations from previous examples or responses. Provide specific, relevant, and detailed locations based on the context, using the format:
-   - **Example**: “Food court, second floor near east wing entrance, Madison Square Mall, Los Angeles, CA” 
+   - **Example**: “Food court, second floor near east wing entrance, Madison Square Mall, Los Angeles, CA”
 6. **Consistency**: Match field structures precisely, maintaining {{trackerFormat}} syntax. If no changes occur in a field, keep the most recent value.
 7. **Topics Format**: Ensure topics are one- or two-word keywords relevant to the scene to help trigger contextual information. Avoid long phrases.
 8. **Avoid Redundancies**: Use only details provided or logically inferred from context. Do not introduce speculative or unnecessary information.
@@ -344,7 +348,7 @@ const mesTrackerJavascript = `() => {
 		// Example of hooking into tracker preview updated call
 		// SillyTavern.getContext().eventSource.on("TRACKER_PREVIEW_UPDATED", helloWorld)
     };
-	
+
     const cleanup = () => {
         console.log("Tracker preview js cleaned up!");
 		// Example of releasing tracker preview calls

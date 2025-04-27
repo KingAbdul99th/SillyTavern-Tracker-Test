@@ -2,7 +2,7 @@
 <div id="tracker_settings" class="extension_container">
 	<div class="inline-drawer">
 		<div class="inline-drawer-toggle inline-drawer-header">
-			<b>Tracker</b>
+			<b>Tracker-Local</b>
 			<div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
 		</div>
 		<div class="inline-drawer-content">
@@ -12,7 +12,26 @@
 				<label for="tracker_enable">Enable Tracker</label>
 			</div>
 			<hr class="sysHR" />
-			<!-- Generation Target -->
+
+            <!-- Connection Profile -->
+			<div class="tracker-block m-b-1 m-t-1">
+				<label for="tracker_generation_connection_profile">Connection Profile</label><br />
+				<small>Override connection profile for tracker generation:</small><br />
+				<select id="tracker_generation_connection_profile" class="text_pole">
+					<option value="current">Same as current</option>
+				</select>
+			</div>
+
+            <!-- Completion Preset -->
+			<div class="tracker-block m-b-1 m-t-1">
+				<label for="tracker_generation_completion_preset">Completion preset</label><br />
+				<small>Override completion preset for tracker generation:</small><br />
+				<select id="tracker_generation_completion_preset" class="text_pole">
+					<option value="current">Same as current</option>
+				</select>
+			</div>
+
+            <!-- Generation Target -->
 			<div class="tracker-block m-b-1 m-t-1">
 				<label for="tracker_generation_target">Generation Target</label><br />
 				<small>Specifies who the tracker should auto-generate for: User, Character, Both, or None.</small><br />

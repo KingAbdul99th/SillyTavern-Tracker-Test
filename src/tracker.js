@@ -464,11 +464,13 @@ export async function addTrackerToMessage(mesId) {
 				await saveTrackerToMessage(mesId, tracker);
 			}
 		}
-		if (manageStopButton) activateSendButtons();
 	}
 	} catch (e) {
-		if (manageStopButton) activateSendButtons();
+        debug(e)
 	}
+    finally {
+		if (manageStopButton) activateSendButtons();
+    }
 }
 
 //#endregion
