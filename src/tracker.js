@@ -468,9 +468,7 @@ export async function addTrackerToMessage(mesId) {
 	} catch (e) {
         debug(e)
 	}
-    finally {
-		if (manageStopButton) activateSendButtons();
-    }
+    if (manageStopButton) activateSendButtons();
 }
 
 //#endregion

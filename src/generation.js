@@ -56,9 +56,13 @@ export async function generateTracker(mesNum, includedFields = FIELD_INCLUDE_OPT
 	if (mesNum == null || mesNum < 0 || chat[mesNum].extra?.isSmallSys) return null;
     let ctx = getContext();
     let presetManager = ctx.getPresetManager();
+    let connectionManagerSettings = ctx.extensionSettings["connectionManager"]
     const preselectedPreset = presetManager.getSelectedPreset();
+    const preselectedProfile = connectionManagerSettings.profiles.find(x => x.id === connectionManagerSettings["selectedProfile"]).name
+
     if (extensionSettings.selectedProfile !== "current") {
         debug("overriding connection profile");
+        await ctx.executeSlashCommandsWithOptions(`/profile ${extensionSettings.selectedProfile}`)
     }
 
     if (extensionSettings.selectedCompletionPreset !== "current") {
@@ -86,8 +90,8 @@ export async function generateTracker(mesNum, includedFields = FIELD_INCLUDE_OPT
     finally {
         debug("removing connection profile & completion preset override");
         presetManager.selectPreset(preselectedPreset);
+        await ctx.executeSlashCommandsWithOptions(`/profile ${preselectedProfile}`)
     }
-
 }
 
 /**
